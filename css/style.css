@@ -4,4 +4,30 @@
     box-sizing: border-box;
 }
 
-body {}
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 1fr;
+    background-color: lightblue;
+    padding: 32px;
+    width: 80vw;
+    max-width: 400px;
+}
+
+.board-cell {
+    aspect-ratio: 1;
+    background-color: lightgreen;
+    border: 1px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 64px;
+    font-weight: 900;
+}
