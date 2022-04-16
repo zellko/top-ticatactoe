@@ -1,18 +1,25 @@
 const game = (() => {
     // Module: Follow up the flow of the game...
-    // ...check when the user click on gameBoard case
+    // ... check when the user click on gameBoard case or buttons
     // ... define which player is active
     // ... define if th game should continue or not
     const btnTest = document.querySelector("#test");
-    const boardCase = document.querySelectorAll(".board-cell");
-    let activePlayer = "X";
+    const btnStart = document.querySelector("#start");
+    const btnRestart = document.querySelector("#restart");
+    const boardCell = document.querySelectorAll(".board-cell");
+    const inputPlayer1Name = document.querySelector("#player1");
+    const inputPlayer2Name = document.querySelector("#player2");
+
+    let activePlayer = undefined;
+    let isGameOver = true;
 
 
     const _Player = (name) => {
         // Factory - Private : Create player object
         // ... player name are only accessible in the scope of game.
         let playerName = name;
-        return { playerName };
+        let playerMark = "";
+        return { playerName, playerMark };
     };
 
     const _gameBoard = (() => {
@@ -39,16 +46,66 @@ const game = (() => {
             // ... get the cell row and column number.
             const rowNumber = cell.getAttribute("row");
             const colNumber = cell.getAttribute("col");
-            console.log(rowNumber, colNumber);
+            //console.log(rowNumber, colNumber);
 
-            cell.textContent = activePlayer; // ...populate the cell with the correct mark.
-            gameArray[rowNumber][colNumber] = activePlayer; // ...populate the array with the correct mark. 
+            cell.textContent = activePlayer.playerMark; // ...populate the cell with the correct mark.
+            gameArray[rowNumber][colNumber] = activePlayer.playerMark; // ...populate the array with the correct mark. 
+            //console.log(gameArray);
 
-            console.log(gameArray);
+            checkForWinner(rowNumber, colNumber);
+        };
+
+        const checkForWinner = (row, col) => {
+            // Check for 3 in a row: Line
+            if (gameArray[row].every(element => element === activePlayer.playerMark)) {
+                console.log(`${activePlayer.playerName} Win! With 3 in line`)
+                isGameOver = true;
+            };
+
+            // Check for 3 in a row: Column
+            let checkColumn = [];
+            gameArray.forEach(element => {
+                checkColumn.push(element[col]);
+            });
+            if (checkColumn.every(element => element === activePlayer.playerMark)) {
+                console.log(`${activePlayer.playerName} Win! With 3 in column`);
+                isGameOver = true;
+            };
+
+            // Check for 3 in a row: Diagonal
+            let checkDiagonalA = [];
+            let checkDiagonalB = [];
+            let countA = 0;
+            let countB = 2;
+            gameArray.forEach(element => {
+                checkDiagonalA.push(element[countA]);
+                ++countA;
+            });
+            gameArray.forEach(element => {
+                checkDiagonalB.push(element[countB]);
+                --countB;
+            });
+
+            if (checkDiagonalA.every(element => element === activePlayer.playerMark)) {
+                console.log(`${activePlayer.playerName} Win! With 3 in diagonal A`);
+                isGameOver = true;
+            };
+
+            if (checkDiagonalB.every(element => element === activePlayer.playerMark)) {
+                console.log(`${activePlayer.playerName} Win! With 3 in diagonal B`);
+                isGameOver = true;
+            };
+
+            // Check for tie
+            // !!!
+
+
+            // Change active player
+            (activePlayer === player1) ? activePlayer = player2: activePlayer = player1;
         };
 
         const clearBoard = () => {
-            // ...
+            // Reset the gameArray
             gameArray = [
                 [undefined, undefined, undefined],
                 [undefined, undefined, undefined],
@@ -66,40 +123,49 @@ const game = (() => {
         // ...get the player name input
         //...clear the game board
         //...clear the DOM
-        player1.playerName = "John Doe";
-        player2.playerName = "Mr. Smith";
+
+        (inputPlayer1Name.value === "") ? player1.playerName = "John Doe": player1.playerName = inputPlayer1Name.value;
+        (inputPlayer2Name.value === "") ? player2.playerName = "Mr. Smith": player2.playerName = inputPlayer2Name.value;
+
+        player1.playerMark = "X";
+        player2.playerMark = "0";
+
+        activePlayer = player1;
 
         _gameBoard.clearBoard();
 
-        boardCase.forEach(cell => cell.textContent = "");
+        boardCell.forEach(cell => cell.textContent = "");
 
-        activePlayer = "X";
+        isGameOver = false;
 
     };
-
-    const checkArray = () => {
-        console.log(_gameBoard.gameArray);
-    };
-
-    /********************** 
-    Event listner: Check for user actions
-    ***********************/
-    boardCase.forEach(bcase => bcase.addEventListener("click", function(e) {
-        _gameBoard.populateBoard(e);
-        (activePlayer === "X") ? activePlayer = "O": activePlayer = "X";
-    }));
 
     /* Player object */
     const player1 = _Player("Zell");
     const player2 = _Player("Koss");
 
     /********************** 
-     Test Area:
+    Event listner: Check for user actions
     ***********************/
-    btnTest.addEventListener("click", () => {
-        console.log(_gameBoard.gameArray);
+
+    btnStart.addEventListener("click", () => {
+        _initateGame();
     })
 
+
+    boardCell.forEach(bcase => bcase.addEventListener("click", function(e) {
+        if (isGameOver) return; // If the game is over or not started, we ignore the click on the cells
+        _gameBoard.populateBoard(e);
+
+
+    }));
+
+
+
+    /********************** 
+     Test Area:
+    ***********************/
+
     // Public functions
-    return { checkArray, _initateGame } //_initateGame public for testing purpose, to be removed.
+    return {}
 })();
