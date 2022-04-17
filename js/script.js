@@ -9,9 +9,11 @@ const game = (() => {
     const boardCell = document.querySelectorAll(".board-cell");
     const inputPlayer1Name = document.querySelector("#player1");
     const inputPlayer2Name = document.querySelector("#player2");
+    const displayResult = document.querySelector(".display-result h2");
 
     let activePlayer = undefined;
     let isGameOver = true;
+    let playCounter = 0; // Variable to count the number of play done, if no winner after 9 play, it's a tie.
 
 
     const _Player = (name) => {
@@ -59,6 +61,7 @@ const game = (() => {
             // Check for 3 in a row: Line
             if (gameArray[row].every(element => element === activePlayer.playerMark)) {
                 console.log(`${activePlayer.playerName} Win! With 3 in line`)
+                displayResult.textContent = `${activePlayer.playerName} (${activePlayer.playerMark}) win the game!`;
                 isGameOver = true;
             };
 
@@ -69,39 +72,41 @@ const game = (() => {
             });
             if (checkColumn.every(element => element === activePlayer.playerMark)) {
                 console.log(`${activePlayer.playerName} Win! With 3 in column`);
+                displayResult.textContent = `${activePlayer.playerName} (${activePlayer.playerMark}) win the game!`;
                 isGameOver = true;
             };
 
             // Check for 3 in a row: Diagonal
-            let checkDiagonalA = [];
-            let checkDiagonalB = [];
-            let countA = 0;
-            let countB = 2;
-            gameArray.forEach(element => {
-                checkDiagonalA.push(element[countA]);
-                ++countA;
-            });
-            gameArray.forEach(element => {
-                checkDiagonalB.push(element[countB]);
-                --countB;
-            });
+            let checkDiagonalA = [gameArray[0][0], gameArray[1][1], gameArray[2][2]];
+            let checkDiagonalB = [gameArray[0][2], gameArray[1][1], gameArray[2][0]];
 
             if (checkDiagonalA.every(element => element === activePlayer.playerMark)) {
                 console.log(`${activePlayer.playerName} Win! With 3 in diagonal A`);
+                displayResult.textContent = `${activePlayer.playerName} (${activePlayer.playerMark}) win the game!`;
                 isGameOver = true;
             };
 
             if (checkDiagonalB.every(element => element === activePlayer.playerMark)) {
                 console.log(`${activePlayer.playerName} Win! With 3 in diagonal B`);
+                displayResult.textContent = `${activePlayer.playerName} (${activePlayer.playerMark}) win the game!`;
                 isGameOver = true;
             };
 
             // Check for tie
-            // !!!
+            console.log(playCounter);
+
+            if (playCounter >= 8) {
+                console.log("It's a tie!");
+                displayResult.textContent = "It's a tie!";
+                isGameOver = true;
+            };
 
 
             // Change active player
             (activePlayer === player1) ? activePlayer = player2: activePlayer = player1;
+
+            // Increase counter of play
+            ++playCounter;
         };
 
         const clearBoard = () => {
@@ -135,6 +140,9 @@ const game = (() => {
         _gameBoard.clearBoard();
 
         boardCell.forEach(cell => cell.textContent = "");
+        displayResult.textContent = "";
+
+        playCounter = 0;
 
         isGameOver = false;
 
@@ -154,17 +162,9 @@ const game = (() => {
 
 
     boardCell.forEach(bcase => bcase.addEventListener("click", function(e) {
-        if (isGameOver) return; // If the game is over or not started, we ignore the click on the cells
+        if (isGameOver) _initateGame(); // If the game is over, we reset the board before to start a new game
         _gameBoard.populateBoard(e);
-
-
     }));
-
-
-
-    /********************** 
-     Test Area:
-    ***********************/
 
     // Public functions
     return {}
