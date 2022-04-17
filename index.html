@@ -11,26 +11,64 @@
 </head>
 
 <body>
-    <div>
-        <button id="start">Start Game!</button>
-        <button id="restart">New Game!</button>
+
+    <div class="header">
+        <h1>Tic Tac Toe</h1>
     </div>
 
-    <form action="">
-        <input type="text" name="player1" id="player1" placeholder="John Doe">
-        <input type="text" name="player2" id="player2" placeholder="Mr.Smith">
-    </form>
+    <div class="board-container">
+        <div class="board">
+            <div class="board-cell" row="0" col="0"></div>
+            <div class="board-cell" row="0" col="1"></div>
+            <div class="board-cell" row="0" col="2"></div>
+            <div class="board-cell" row="1" col="0"></div>
+            <div class="board-cell" row="1" col="1"></div>
+            <div class="board-cell" row="1" col="2"></div>
+            <div class="board-cell" row="2" col="0"></div>
+            <div class="board-cell" row="2" col="1"></div>
+            <div class="board-cell" row="2" col="2"></div>
+        </div>
+    </div>
 
-    <div class="board">
-        <div class="board-cell" row="0" col="0"></div>
-        <div class="board-cell" row="0" col="1"></div>
-        <div class="board-cell" row="0" col="2"></div>
-        <div class="board-cell" row="1" col="0"></div>
-        <div class="board-cell" row="1" col="1"></div>
-        <div class="board-cell" row="1" col="2"></div>
-        <div class="board-cell" row="2" col="0"></div>
-        <div class="board-cell" row="2" col="1"></div>
-        <div class="board-cell" row="2" col="2"></div>
+    <div class="display-result">
+        <h2></h2>
+    </div>
+
+    <!-- <button id="restart">New Game!</button> -->
+
+    <div class="footer">
+        <p>2022 @Zellko</p>
+    </div>
+
+    <div class="modal-container">
+        <div class="modal">
+            <form action="">
+
+                <div class="form-player-1">
+                    <h3>Player 1</h3>
+                    <label for="player1">Name</label>
+                    <input type="text" name="player1" id="player1" placeholder="John Doe">
+                </div>
+
+                <div class="form-player-2">
+                    <h3>Player 2</h3>
+                    <label for="player2">Name</label>
+                    <input type="text" name="player2" id="player2" placeholder="Mr.Smith">
+                    <div>
+                        <h4> Opponent:</h4>
+                        <div>
+                            <label for="human">Human:</label>
+                            <input type="radio" name="human-ia" id="human" checked>
+                        </div>
+                        <div>
+                            <label for="ia">IA:</label>
+                            <input type="radio" name="human-ia" id="ia">
+                        </div>
+                    </div>
+                </div>
+            </form>
+            <button id="start">Start Game!</button>
+        </div>
     </div>
 </body>
 
