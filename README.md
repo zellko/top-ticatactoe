@@ -24,14 +24,14 @@ HTML/CSS:
 - [x] Check for three in a row, on line.
 - [x] Check for three in a row, on column.
 - [x] Check for three in a row, on diagonals.
-- [ ] Check for tie.
+- [x] Check for tie.
 
 3. Clear the board:
 - [x] Create a function, when the game is finished, to clear the board and array.
 
 4. Fine-tuning: 
 - [x] Get the player Names from input.
-- [ ] At the end of the game, display the winner name or "It's a tie". Propose players to restart game.
+- [x] At the end of the game, display the winner name or "It's a tie". Propose players to restart game.
 
 5. Code cleaning:
 - [ ] Add comments / refactor
