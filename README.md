@@ -7,7 +7,7 @@ The Odin Project - JavaScript - Project: Tic Tac Toe
 HTML/CSS:
 - [x] Create a simple board.
 - [ ] Add modal or division to add play name.
-- [ ] Add a modal or division to display the winner and restart button.
+- [x] Add a modal or division to display the winner.
 - [ ] Style everything.  
 
 ### JS
