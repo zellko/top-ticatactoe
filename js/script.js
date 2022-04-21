@@ -3,10 +3,10 @@ const game = (() => {
     // ... check when the user click on gameBoard case or buttons
     // ... define which player is active
     // ... define if th game should continue or not
-    const btnRestart = document.querySelector("#restart");
     const boardCell = document.querySelectorAll(".board-cell");
     const inputPlayer1Name = document.querySelector("#p1-name");
     const inputPlayer2Name = document.querySelector("#p2-name");
+    const inputCheckBoxIA = document.querySelector("#ia-checkbox");
     const displayResult = document.querySelector(".display-result h2");
 
     let activePlayer = undefined;
@@ -90,7 +90,7 @@ const game = (() => {
 
             if (isGameOver) {
                 inputPlayer1Name.disabled = false;
-                inputPlayer2Name.disabled = false;
+                if (!inputCheckBoxIA.checked) inputPlayer2Name.disabled = false;
             };
 
             // Change active player
@@ -300,6 +300,20 @@ const game = (() => {
     Event listner: Check for user actions
     ***********************/
 
+    inputCheckBoxIA.addEventListener("change", (e) => {
+
+        if (e.target.checked) {
+            player2.playerName = "IA";
+            inputPlayer2Name.value = "IA";
+            inputPlayer2Name.disabled = true;
+        } else {
+            player2.playerName = "Player 2";
+            inputPlayer2Name.value = "Player 2";
+            inputPlayer2Name.disabled = false;
+        };
+
+    });
+
     boardCell.forEach(bcase => bcase.addEventListener("click", function(e) {
         // When a player click on a board cell...
         if (isGameOver) _initateGame(); // If the game is over, we reset the board before to start a new game
@@ -315,7 +329,7 @@ const game = (() => {
 
         _gameBoard.populateBoard(cell);
 
-        if (player2.playerName === "ia" && !isGameOver) {
+        if (player2.playerName === "IA" && !isGameOver) {
             const iaCellChoice = _ia.chooseCell();
             const iaCellDom = document.querySelector(`[row='${iaCellChoice[0]}'][col='${iaCellChoice[1]}']`);
             _gameBoard.populateBoard(iaCellDom);
