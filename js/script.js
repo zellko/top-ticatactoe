@@ -18,6 +18,7 @@ const game = (() => {
         [undefined, undefined, undefined],
         [undefined, undefined, undefined],
     ];
+
     const _Player = (name) => {
         // Factory - Private : Create player object
         // ... player name are only accessible in the scope of game.
@@ -28,18 +29,16 @@ const game = (() => {
 
     const _gameBoard = (() => {
         // Module - Private : Display the gameBoard to the DOM
-        // ... is private so can not be modified outiside ou game scope, so user can not cheat using browser console
+        // ... is private so can not be modified outiside ou game scope, so user can not modify variables using browser console
 
         const populateBoard = (domCell) => {
 
             // ... get the cell row and column number.
             const rowNumber = domCell.getAttribute("row");
             const colNumber = domCell.getAttribute("col");
-            //console.log(rowNumber, colNumber);
 
             domCell.textContent = activePlayer.playerMark; // ...populate the cell with the correct mark.
             gameArray[rowNumber][colNumber] = activePlayer.playerMark; // ...populate the array with the correct mark. 
-            //console.log(gameArray);
 
             checkForWinner(rowNumber, colNumber);
         };
@@ -80,7 +79,6 @@ const game = (() => {
             };
 
             // Check for tie
-            console.log(playCounter);
 
             if (playCounter >= 8) {
                 console.log("It's a tie!");
@@ -91,6 +89,7 @@ const game = (() => {
             if (isGameOver) {
                 inputPlayer1Name.disabled = false;
                 if (!inputCheckBoxIA.checked) inputPlayer2Name.disabled = false;
+                inputCheckBoxIA.disabled = false;
             };
 
             // Change active player
@@ -107,8 +106,6 @@ const game = (() => {
                 [undefined, undefined, undefined],
                 [undefined, undefined, undefined],
             ];
-
-            console.log(gameArray);
         };
 
         return { populateBoard, clearBoard }
@@ -116,73 +113,68 @@ const game = (() => {
 
     const _ia = (() => {
 
-        const checkForIAWin = () => {};
-
-        const checkForPlayerWin = () => {
+        const checkWinningPlay = (mark, markNumber, undefinedNumber) => {
             let colN = undefined;
             let rowN = undefined;
-            let xCount = 0;
+            let markCount = 0;
             let undefCount = 0;
 
-            // Check if player can win with 3 in a row (line)
+            // Check if player / IA can win with 3 in a row (line)
             for (let i = 0; i < gameArray.length; ++i) {
-                console.log('Row: index:', i, 'element:', gameArray[i]);
                 rowN = i;
                 colN = undefined;
-                xCount = 0;
+                markCount = 0;
                 undefCount = 0;
 
                 gameArray[i].forEach((cell, index) => {
-                    if (cell === "X") ++xCount;
+                    if (cell === mark) ++markCount;
                     if (cell === undefined) {
                         ++undefCount;
                         colN = index;
                     }
                 });
 
-                if (xCount === 2 && undefCount === 1) {
-                    console.log("WinCon found row")
+                if (markCount === markNumber && undefCount === undefinedNumber) {
                     return [rowN, colN];
                 };
             };
 
-            // Check if player can win with 3 in a row (column)
+            // Check if player / IA  can win with 3 in a row (column)
             const col1 = [gameArray[0][0], gameArray[1][0], gameArray[2][0]]
             const col2 = [gameArray[0][1], gameArray[1][1], gameArray[2][1]]
             const col3 = [gameArray[0][2], gameArray[1][2], gameArray[2][2]]
             const allColumns = [col1, col2, col3]
 
             for (let i = 0; i < allColumns.length; ++i) {
-                console.log('index:', i, 'element:', allColumns[i]);
                 colN = i;
                 rowN = undefined;
-                xCount = 0;
+                markCount = 0;
                 undefCount = 0;
 
                 allColumns[i].forEach((cell, index) => {
-                    if (cell === "X") ++xCount;
+                    if (cell === mark) ++markCount;
                     if (cell === undefined) {
                         ++undefCount;
                         rowN = index;
                     }
                 });
 
-                if (xCount === 2 && undefCount === 1) {
-                    console.log("WinCon found column")
+                if (markCount === markNumber && undefCount === undefinedNumber) {
                     return [rowN, colN];
                 };
             };
 
-            // Check if player can win with 3 in a row (diagonal)
+            // Check if player / IA  can win with 3 in a row (diagonal)
             const diag1 = [gameArray[0][0], gameArray[1][1], gameArray[2][2]];
             const diag2 = [gameArray[0][2], gameArray[1][1], gameArray[2][0]];
+
             colN = undefined;
             rowN = undefined;
-            xCount = 0;
+            markCount = 0;
             undefCount = 0;
 
             for (let i = 0; i < diag1.length; ++i) {
-                if (diag1[i] === "X") ++xCount;
+                if (diag1[i] === mark) ++markCount;
                 if (diag1[i] === undefined) {
                     ++undefCount;
                     rowN = i;
@@ -190,19 +182,22 @@ const game = (() => {
                 };
             };
 
-            if (xCount === 2 && undefCount === 1) {
+            console.log(`Diag 1 test: mark ${markCount} / undef ${markCount}`);
+            console.log(`Diag 1 test: mark num ${markNumber} / undef num ${undefinedNumber}`);
+
+            if (markCount === markNumber && undefCount === undefinedNumber) {
+                console.log("diag 1 found a play");
                 return [rowN, colN];
             };
 
-            xCount = 0;
+            markCount = 0;
             undefCount = 0;
             colN = undefined;
             rowN = undefined;
 
             for (let i = 0; i < diag2.length; ++i) {
-                console.log('index:', i, 'element:', diag1[i]);
 
-                if (diag2[i] === "X") ++xCount;
+                if (diag2[i] === mark) ++markCount;
                 if (diag2[i] === undefined) {
                     ++undefCount;
                     rowN = i;
@@ -213,9 +208,10 @@ const game = (() => {
 
             };
 
-            if (xCount === 2 && undefCount === 1) {
-                console.log("WinCon found d2")
-                console.log([rowN, colN])
+            console.log(`Diag 2 test: mark ${markCount} / undef ${markCount}`);
+
+            if (markCount === markNumber && undefCount === undefinedNumber) {
+                console.log("diag 2 found a play");
                 return [rowN, colN];
             };
 
@@ -236,19 +232,26 @@ const game = (() => {
             };
 
             // ... The IA will first check if she can win...
-            // To be coded
+            const isIACanWin = checkWinningPlay(player2.playerMark, 2, 1);
+            console.log(`WinCon ia found = ${isIACanWin}`);
 
-            //... then check if player can win, an block him ...
-            const isPlayerCanWin = checkForPlayerWin();
-            console.log(`WinCon = ${isPlayerCanWin}`);
+            if (isIACanWin !== null) return isIACanWin;
+
+            //... then check if player can win, if yes block him ...
+            const isPlayerCanWin = checkWinningPlay(player1.playerMark, 2, 1);
+            console.log(`WinCon player = ${isPlayerCanWin}`);
 
             if (isPlayerCanWin !== null) return isPlayerCanWin;
 
             //... then choose a logic play based on gameboard  ...
             // To be added
+            const iaLogicPlay = checkWinningPlay(player2.playerMark, 1, 2);
+            console.log(`IA 'logic' play = ${iaLogicPlay}`);
 
+            if (iaLogicPlay !== null) return iaLogicPlay;
 
-            // Get all the avaiable cells
+            // ... or choose a random cell
+            console.log("I don't know what to do, so I choose as random cell");
             gameArray.forEach((rows, index) => {
                 let rowN = index;
                 rows.forEach((cell, index) => {
@@ -275,7 +278,7 @@ const game = (() => {
         (inputPlayer2Name.value === "") ? player2.playerName = "Player 2": player2.playerName = inputPlayer2Name.value;
 
         player1.playerMark = "X";
-        player2.playerMark = "0";
+        player2.playerMark = "O";
 
         activePlayer = player1;
 
@@ -290,6 +293,7 @@ const game = (() => {
 
         inputPlayer1Name.disabled = true;
         inputPlayer2Name.disabled = true;
+        inputCheckBoxIA.disabled = true;
     };
 
     /* Player object */
@@ -301,6 +305,8 @@ const game = (() => {
     ***********************/
 
     inputCheckBoxIA.addEventListener("change", (e) => {
+
+        if (!isGameOver) return;
 
         if (e.target.checked) {
             player2.playerName = "IA";
