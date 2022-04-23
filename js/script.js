@@ -94,12 +94,15 @@ const game = (() => {
         };
 
         const clearBoard = () => {
-            // Reset the gameArray
+            // Reset the gameArray and clear the game board DOM
             gameArray = [
                 [undefined, undefined, undefined],
                 [undefined, undefined, undefined],
                 [undefined, undefined, undefined],
             ];
+
+            boardCell.forEach(cell => cell.textContent = "");
+            displayResult.textContent = "";
         };
 
         return { populateBoard, clearBoard }
@@ -176,7 +179,7 @@ const game = (() => {
                 if (diag1[i] === undefined) {
                     ++undefCount;
 
-                    if (undefinedNumber === 2 && undefCount === 1) {
+                    if (undefinedNumber === 2 && undefCount === 1) { // If the undefinedNumber = 2, we select the first cell empty and not the second one
                         rowN = i;
                         colN = i;
                     } else if (undefinedNumber === 1) {
@@ -272,27 +275,27 @@ const game = (() => {
 
     function _initateGame() {
         // Function - Private: 
-        // ...get the player name input
-        //...clear the game board
-        //...clear the DOM
+        // ...get the player name, mark
+        //... clear the game board
+        //... clear the DOM
 
+        // If player name input are emtpy, assign them generic name
         (inputPlayer1Name.value === "") ? player1.playerName = "Player 1": player1.playerName = inputPlayer1Name.value;
         (inputPlayer2Name.value === "") ? player2.playerName = "Player 2": player2.playerName = inputPlayer2Name.value;
 
+        // Assign each player a mark
         player1.playerMark = "X";
         player2.playerMark = "O";
 
-        activePlayer = player1;
+        activePlayer = player1; // Set the first active player.
 
-        _gameBoard.clearBoard();
+        _gameBoard.clearBoard(); // Clear the board
 
-        boardCell.forEach(cell => cell.textContent = "");
-        displayResult.textContent = "";
+        playCounter = 0; // Reset variable
 
-        playCounter = 0;
+        isGameOver = false; // Reset variable
 
-        isGameOver = false;
-
+        // disable the inputs while the game is during.
         inputPlayer1Name.disabled = true;
         inputPlayer2Name.disabled = true;
         inputCheckBoxIA.disabled = true;
@@ -307,16 +310,17 @@ const game = (() => {
     ***********************/
 
     inputCheckBoxIA.addEventListener("change", (e) => {
+        // Listen if the checkbox "Play against IA:" is checked
 
-        if (!isGameOver) return;
+        if (!isGameOver) return; // Ignore if a game is ongoing.
 
         if (e.target.checked) {
             player2.playerName = "IA";
             inputPlayer2Name.value = "IA";
             inputPlayer2Name.disabled = true;
         } else {
-            player2.playerName = "Player 2";
-            inputPlayer2Name.value = "Player 2";
+            player2.playerName = "";
+            inputPlayer2Name.value = "";
             inputPlayer2Name.disabled = false;
         };
 
@@ -329,15 +333,15 @@ const game = (() => {
         // ...Get the cell clicked
         const cell = e.target;
 
-        // ... Check if it is empty 
+        // ... Check if cell is already marked
         if (cell.textContent !== "") {
             console.log("Cell already mnarked!");
-            return; // If not empty, ignore the click.
+            return; // If already marked, ignore the click.
         };
 
         _gameBoard.populateBoard(cell);
 
-        if (player2.playerName === "IA" && !isGameOver) {
+        if (player2.playerName === "IA" && !isGameOver) { // If the player 2 name is "IA", the IA will choose a cell.
             const iaCellChoice = _ia.chooseCell();
             const iaCellDom = document.querySelector(`[row='${iaCellChoice[0]}'][col='${iaCellChoice[1]}']`);
             _gameBoard.populateBoard(iaCellDom);
