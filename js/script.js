@@ -28,25 +28,23 @@ const game = (() => {
     };
 
     const _gameBoard = (() => {
-        // Module - Private : Display the gameBoard to the DOM
-        // ... is private so can not be modified outiside ou game scope, so user can not modify variables using browser console
+        // Module - Private : Display gameBoard to the DOM, check for 3 in a row (winner) 
+        // ... is private so can not be modified outiside ou game scope, user can not modify variables using browser console
 
         const populateBoard = (domCell) => {
-
             // ... get the cell row and column number.
             const rowNumber = domCell.getAttribute("row");
             const colNumber = domCell.getAttribute("col");
 
-            domCell.textContent = activePlayer.playerMark; // ...populate the cell with the correct mark.
-            gameArray[rowNumber][colNumber] = activePlayer.playerMark; // ...populate the array with the correct mark. 
+            domCell.textContent = activePlayer.playerMark; // ...populate the cell with active player mark.
+            gameArray[rowNumber][colNumber] = activePlayer.playerMark; // ...populate active player mark.
 
-            checkForWinner(rowNumber, colNumber);
+            checkForWinner(rowNumber, colNumber); // After populating the gameArray and board. We check if there is a winner. 
         };
 
         const checkForWinner = (row, col) => {
             // Check for 3 in a row: Line
             if (gameArray[row].every(element => element === activePlayer.playerMark)) {
-                console.log(`${activePlayer.playerName} Win! With 3 in line`)
                 displayResult.textContent = `${activePlayer.playerName} (${activePlayer.playerMark}) win the game!`;
                 isGameOver = true;
             };
@@ -57,7 +55,6 @@ const game = (() => {
                 checkColumn.push(element[col]);
             });
             if (checkColumn.every(element => element === activePlayer.playerMark)) {
-                console.log(`${activePlayer.playerName} Win! With 3 in column`);
                 displayResult.textContent = `${activePlayer.playerName} (${activePlayer.playerMark}) win the game!`;
                 isGameOver = true;
             };
@@ -67,29 +64,19 @@ const game = (() => {
             let checkDiagonalB = [gameArray[0][2], gameArray[1][1], gameArray[2][0]];
 
             if (checkDiagonalA.every(element => element === activePlayer.playerMark)) {
-                console.log(`${activePlayer.playerName} Win! With 3 in diagonal A`);
                 displayResult.textContent = `${activePlayer.playerName} (${activePlayer.playerMark}) win the game!`;
                 isGameOver = true;
             };
 
             if (checkDiagonalB.every(element => element === activePlayer.playerMark)) {
-                console.log(`${activePlayer.playerName} Win! With 3 in diagonal B`);
                 displayResult.textContent = `${activePlayer.playerName} (${activePlayer.playerMark}) win the game!`;
                 isGameOver = true;
             };
 
             // Check for tie
-
             if (playCounter >= 8) {
-                console.log("It's a tie!");
                 displayResult.textContent = "It's a tie!";
                 isGameOver = true;
-            };
-
-            if (isGameOver) {
-                inputPlayer1Name.disabled = false;
-                if (!inputCheckBoxIA.checked) inputPlayer2Name.disabled = false;
-                inputCheckBoxIA.disabled = false;
             };
 
             // Change active player
@@ -97,6 +84,13 @@ const game = (() => {
 
             // Increase counter of play
             ++playCounter;
+
+            // Enable the input at the end of the game
+            if (isGameOver) {
+                inputPlayer1Name.disabled = false;
+                if (!inputCheckBoxIA.checked) inputPlayer2Name.disabled = false;
+                inputCheckBoxIA.disabled = false;
+            };
         };
 
         const clearBoard = () => {
@@ -113,13 +107,17 @@ const game = (() => {
 
     const _ia = (() => {
 
-        const checkWinningPlay = (mark, markNumber, undefinedNumber) => {
+        const foundCell = (mark, markNumber, undefinedNumber) => {
+            // This function check each lines, colums or diagonals for a specific pattern...
+            //... E.g. if mark = "X", markNumber = 2, undefinedNumber= 1, will check for a line/column/diagonal with 2x "X" and 1x "undefined"
+            //... if the pattern is found, return the position on the "undefined"
+            // This function is used by the IA, to check if she can win, prevent that human player win or to choose a cell on a line/column/diagonal which already have one of her mark. 
             let colN = undefined;
             let rowN = undefined;
             let markCount = 0;
             let undefCount = 0;
 
-            // Check if player / IA can win with 3 in a row (line)
+            // Check the rows for the specific pattern...
             for (let i = 0; i < gameArray.length; ++i) {
                 rowN = i;
                 colN = undefined;
@@ -139,7 +137,7 @@ const game = (() => {
                 };
             };
 
-            // Check if player / IA  can win with 3 in a row (column)
+            // Check the columns for the specific pattern...
             const col1 = [gameArray[0][0], gameArray[1][0], gameArray[2][0]]
             const col2 = [gameArray[0][1], gameArray[1][1], gameArray[2][1]]
             const col3 = [gameArray[0][2], gameArray[1][2], gameArray[2][2]]
@@ -164,7 +162,7 @@ const game = (() => {
                 };
             };
 
-            // Check if player / IA  can win with 3 in a row (diagonal)
+            // Check the diagonals for the specific pattern...
             const diag1 = [gameArray[0][0], gameArray[1][1], gameArray[2][2]];
             const diag2 = [gameArray[0][2], gameArray[1][1], gameArray[2][0]];
 
@@ -177,16 +175,18 @@ const game = (() => {
                 if (diag1[i] === mark) ++markCount;
                 if (diag1[i] === undefined) {
                     ++undefCount;
-                    rowN = i;
-                    colN = i;
+
+                    if (undefinedNumber === 2 && undefCount === 1) {
+                        rowN = i;
+                        colN = i;
+                    } else if (undefinedNumber === 1) {
+                        rowN = i;
+                        colN = i;
+                    };
                 };
             };
 
-            console.log(`Diag 1 test: mark ${markCount} / undef ${markCount}`);
-            console.log(`Diag 1 test: mark num ${markNumber} / undef num ${undefinedNumber}`);
-
             if (markCount === markNumber && undefCount === undefinedNumber) {
-                console.log("diag 1 found a play");
                 return [rowN, colN];
             };
 
@@ -208,10 +208,7 @@ const game = (() => {
 
             };
 
-            console.log(`Diag 2 test: mark ${markCount} / undef ${markCount}`);
-
             if (markCount === markNumber && undefCount === undefinedNumber) {
-                console.log("diag 2 found a play");
                 return [rowN, colN];
             };
 
@@ -219,39 +216,42 @@ const game = (() => {
         };
 
         const chooseCell = () => {
-            // IA Logic
-            console.log("Hey, I'm the IA")
+            // Core IA function, when the IA need to play, she will...
 
             let availableCell = [];
 
-            //First IA Play is defined, either the middle or top left... 
-            if (playCounter === 1 && gameArray[1][1] === undefined) {
-                return [1, 1];
-            } else if (playCounter === 1) {
-                return [0, 0];
+            // ... if it's her first play, will pick a specific cell, depending on human player first choice
+            if (playCounter === 1) {
+                if (gameArray[0][1] === player1.playerMark) return [0, 0];
+                if (gameArray[1][0] === player1.playerMark) return [0, 0];
+                if (gameArray[1][2] === player1.playerMark) return [0, 0];
+                if (gameArray[2][1] === player1.playerMark) return [0, 0];
+                if (gameArray[1][1] === undefined) {
+                    return [1, 1];
+                } else {
+                    return [0, 0];
+                };
             };
 
-            // ... The IA will first check if she can win...
-            const isIACanWin = checkWinningPlay(player2.playerMark, 2, 1);
+            // ... or IA will check if she can win...
+            const isIACanWin = foundCell(player2.playerMark, 2, 1);
             console.log(`WinCon ia found = ${isIACanWin}`);
 
             if (isIACanWin !== null) return isIACanWin;
 
-            //... then check if player can win, if yes block him ...
-            const isPlayerCanWin = checkWinningPlay(player1.playerMark, 2, 1);
+            // ... or check if player can win, if yes block him ...
+            const isPlayerCanWin = foundCell(player1.playerMark, 2, 1);
             console.log(`WinCon player = ${isPlayerCanWin}`);
 
             if (isPlayerCanWin !== null) return isPlayerCanWin;
 
-            //... then choose a logic play based on gameboard  ...
-            // To be added
-            const iaLogicPlay = checkWinningPlay(player2.playerMark, 1, 2);
+            //... or choose a line/colum/diagonal cell which already contain one IA mark  ...
+            const iaLogicPlay = foundCell(player2.playerMark, 1, 2);
             console.log(`IA 'logic' play = ${iaLogicPlay}`);
 
             if (iaLogicPlay !== null) return iaLogicPlay;
 
-            // ... or choose a random cell
-            console.log("I don't know what to do, so I choose as random cell");
+            // ... or choose a random cell among the available (undefined) cell of the board
             gameArray.forEach((rows, index) => {
                 let rowN = index;
                 rows.forEach((cell, index) => {
@@ -261,6 +261,8 @@ const game = (() => {
             });
 
             let randomAIChoice = Math.floor(Math.random() * availableCell.length);
+            console.log(`IA 'random' play = ${randomAIChoice}`);
+
             return availableCell[randomAIChoice];
         }
 
@@ -329,7 +331,7 @@ const game = (() => {
 
         // ... Check if it is empty 
         if (cell.textContent !== "") {
-            console.log("already used!");
+            console.log("Cell already mnarked!");
             return; // If not empty, ignore the click.
         };
 
