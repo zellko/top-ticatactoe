@@ -6,9 +6,9 @@ The Odin Project - JavaScript - Project: Tic Tac Toe
 ### UI
 HTML/CSS:
 - [x] Create a simple board.
-- [ ] Add modal or division to add play name.
+- [x] Add modal or division to add play name.
 - [x] Add a modal or division to display the winner.
-- [ ] Style everything.  
+- [x] Style everything.  
 
 ### JS
 
@@ -34,39 +34,23 @@ HTML/CSS:
 - [x] At the end of the game, display the winner name or "It's a tie". Propose players to restart game.
 
 5. Code cleaning:
-- [ ] Add comments / refactor
+- [x] Add comments / refactor.
 
 6. Optional: AI:
-- [ ] x
-
-### GameFlow:
-
-Players fill up their nameand play "start"
--> Initiate the board, player name, player mark (X/O).
--> Set the active player as "player 1"
--> Set isGameOver = false (as long as this variable is false, the game can continue).
-<wait for player input on a board cell>
-Populate the board cell with active player mark 
--> Update the board in DOM
--> Update the board array 
-    -> Check for winner / tie 
-        -> Yes: Display winner or tie. isGameOver = true (game stopped until it is restarted)
--> Modifiy active player as "player 2" || "player 1"
-<wait for player input on a board cell>
-...
+- [x] Add a bit of smartness.
 
 ## Ressources:
 Images:
 - x
 
 Color Palette:
-- x
+- https://coolors.co/e7ecef-274c77-6096ba-a3cef1-8b8c89
 
 Icons:
-- x
+- https://materialdesignicons.com/
 
 Font:
-- x
+- https://fonts.google.com/specimen/Open+Sans
 
 Code:
 - x
