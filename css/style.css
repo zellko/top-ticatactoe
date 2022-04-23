@@ -4,12 +4,17 @@
     box-sizing: border-box;
 }
 
+@font-face {
+    font-family: open-sans;
+    src: url("../fonts/Open_Sans/OpenSans-VariableFont_wdth\,wght.ttf");
+}
+
 :root {
-    --header-bg-color: #FFC996;
-    --footer-bg-color: #583D72;
-    --board-bg-color: #FF8474;
-    --text-color-light: #FFC996;
-    --text-color-dark: #583D72;
+    --header-bg-color: #274c77;
+    --footer-bg-color: #8b8c89;
+    --board-bg-color: #6096ba;
+    --text-color-light: #e7ecef;
+    --text-color-dark: #274c77;
 }
 
 body {
@@ -17,33 +22,18 @@ body {
     display: flex;
     flex-direction: column;
     gap: 32px;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-family: open-sans, Tahoma, sans-serif;
     text-align: center;
-}
-
-h1 {}
-
-h2 {}
-
-h3 {
-    margin-bottom: 24px;
-}
-
-button {
-    height: 54px;
-    width: 120px;
-    border: 0;
-    border-radius: 8px;
-    background-color: var(--header-bg-color);
-    color: var(--text-color-dark);
-    font-size: 1.1rem;
-    font-weight: 700;
-}
-
-button:hover {
-    background-color: var(--footer-bg-color);
     color: var(--text-color-light);
-    cursor: pointer;
+}
+
+h1 {
+    font-size: 3rem;
+}
+
+h2 {
+    font-size: 1.5rem;
+    color: var(--text-color-dark);
 }
 
 
@@ -53,8 +43,47 @@ header
 
 .header {
     background-color: var(--header-bg-color);
-    color: var(--text-color-dark);
     padding: 32px 0;
+}
+
+
+/***********************
+Game Settings
+************************/
+
+.game-settings {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+}
+
+.name-settings,
+.ia-settings {
+    display: flex;
+    align-items: center;
+}
+
+.ia-settings input {
+    width: min-content;
+    accent-color: var(--text-color-dark)
+}
+
+input {
+    border: 0;
+    border-bottom: 2px solid var(--board-bg-color);
+    text-align: center;
+    width: 128px;
+    margin: 0 8px;
+}
+
+input:disabled {
+    opacity: 0.3;
+}
+
+label {
+    color: var(--text-color-dark);
+    font-weight: 700;
 }
 
 
@@ -79,7 +108,6 @@ Board
 .board-cell {
     aspect-ratio: 1;
     background-color: var(--board-bg-color);
-    color: var(--text-color-light);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -87,21 +115,17 @@ Board
     font-weight: 900;
 }
 
-.board :nth-child(2n+4) {
-    border-top: 4px solid var(--text-color-dark);
+.board :nth-child(1n) {
     border-bottom: 4px solid var(--text-color-dark);
-}
-
-.board :nth-child(3n-1) {
-    border-top: 0;
-    border-bottom: 0;
-    border-left: 4px solid var(--text-color-dark);
     border-right: 4px solid var(--text-color-dark);
 }
 
-.board :nth-child(5) {
-    border-top: 4px solid var(--text-color-dark);
-    border-bottom: 4px solid var(--text-color-dark);
+.board :nth-child(3n) {
+    border-right: 0;
+}
+
+.board :nth-child(1n+7) {
+    border-bottom: 0;
 }
 
 
@@ -120,57 +144,15 @@ Footer
 ************************/
 
 .footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     background-color: var(--footer-bg-color);
-    color: var(--text-color-light);
     padding: 16px 0;
+    gap: 8px;
+    font-size: 1.2rem;
 }
 
-
-/***********************
-Game Settings
-************************/
-
-.game-settings {
+.footer a {
     display: flex;
-    flex-direction: column;
-    align-self: center;
-    align-items: center;
-    gap: 16px;
 }
-
-.name-settings {
-    display: flex;
-    align-items: center;
-}
-
-.ia-settings {
-    display: flex;
-    text-align: left;
-}
-
-.ia-settings input {
-    width: auto;
-    accent-color: var(--text-color-dark)
-}
-
-input {
-    border: 0;
-    border-bottom: 2px solid var(--board-bg-color);
-    text-align: center;
-    width: 128px;
-    margin: 0 8px;
-}
-
-input:disabled {
-    opacity: 0.3;
-}
-
-label {
-    color: var(--text-color-dark);
-    font-weight: 700;
-}
-
-
-/***********************
-JS VARIABLE
-************************/
